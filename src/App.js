@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Paint Application</h1>
+      <h1>Kayla's Art Studio!</h1>
       <ColorPicker color={color} setColor={setColor} />
       <LineWidthSelector lineWidth={lineWidth} setLineWidth={setLineWidth} />
       <ToolSelector tool={tool} setTool={setTool} />

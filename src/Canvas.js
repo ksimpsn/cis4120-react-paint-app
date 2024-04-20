@@ -1,49 +1,68 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
-function Canvas({ color, lineWidth }) {
+function Canvas({ color, lineWidth, tool }) {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
 
-  const startDrawing = (event) => {
+  useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.strokeStyle = color;
     context.lineWidth = lineWidth;
+    context.lineCap = "round"; // Sets the style of the end caps for a line
 
-    // Use direct event properties
-    const { offsetX, offsetY } = event.nativeEvent;
+    // Setup the correct context based on the tool
+    if (tool === "eraser") {
+      context.globalCompositeOperation = "destination-out"; // Set to erase
+      context.strokeStyle = "rgba(0,0,0,1)"; // Just needs to be opaque
+    } else {
+      context.globalCompositeOperation = "source-over"; // Set to draw
+      context.strokeStyle = color;
+    }
+  }, [color, lineWidth, tool]);
+
+  const startDrawing = ({ nativeEvent }) => {
+    const { offsetX, offsetY } = nativeEvent;
+    const context = canvasRef.current.getContext("2d");
     context.beginPath();
     context.moveTo(offsetX, offsetY);
     setIsDrawing(true);
   };
 
-  const draw = (event) => {
+  const draw = ({ nativeEvent }) => {
     if (!isDrawing) return;
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    const { offsetX, offsetY } = event.nativeEvent;
+    const { offsetX, offsetY } = nativeEvent;
+    const context = canvasRef.current.getContext("2d");
     context.lineTo(offsetX, offsetY);
     context.stroke();
   };
 
   const stopDrawing = () => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
+    const context = canvasRef.current.getContext("2d");
     context.closePath();
     setIsDrawing(false);
   };
 
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
   return (
-    <canvas
-      ref={canvasRef}
-      width={800}
-      height={600}
-      onMouseDown={startDrawing}
-      onMouseMove={draw}
-      onMouseUp={stopDrawing}
-      onMouseLeave={stopDrawing}
-      style={{ border: "1px solid black" }}
-    />
+    <div>
+      <canvas
+        ref={canvasRef}
+        width={800}
+        height={600}
+        style={{ border: "1px solid black" }}
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
+      />
+      <button onClick={clearCanvas}>Clear Canvas</button>
+    </div>
   );
 }
 
