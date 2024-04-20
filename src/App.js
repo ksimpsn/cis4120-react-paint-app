@@ -1,23 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import Canvas from "./Canvas";
+import ColorPicker from "./ColorPicker";
+import LineWidthSelector from "./LineWidthSelector";
+import ToolSelector from "./ToolSelector";
 
 function App() {
+  const [color, setColor] = useState("#000000");
+  const [lineWidth, setLineWidth] = useState(3);
+  const [tool, setTool] = useState("pencil");
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Paint Application</h1>
+      <ColorPicker color={color} setColor={setColor} />
+      <LineWidthSelector lineWidth={lineWidth} setLineWidth={setLineWidth} />
+      <ToolSelector tool={tool} setTool={setTool} />
+      <Canvas color={color} lineWidth={lineWidth} tool={tool} />
     </div>
   );
 }

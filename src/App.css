@@ -1,6 +1,14 @@
 .App {
   text-align: center;
+  margin-top: 20px;
 }
+
+canvas {
+  border: 1px solid black;
+  display: block;
+  margin: 20px auto;
+}
+
 
 .App-logo {
   height: 40vmin;
